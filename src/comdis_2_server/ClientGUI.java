@@ -16,12 +16,9 @@ import java.util.logging.Logger;
  */
 public class ClientGUI extends javax.swing.JFrame {
 
-    public int prePort = 7777;
-    public long seed = 1102243;
-    public int pairNum = 0;
-    public ArrayList<Integer> usedPorts;
-    public ArrayList<ArrayList<Long>> serverResult;
+    public int prePort = 7777, pairNum = 0;
     public double result;
+    public ArrayList<Integer> usedPorts;
     public ArrayList<String> servers;
     public ArrayList<Long> pairs;
     public Random random;
@@ -34,23 +31,21 @@ public class ClientGUI extends javax.swing.JFrame {
         initComponents();
         this.setVisible(true);
         this.showServerErrors(false);
-        
+
         usedPorts = new ArrayList<>();
-        serverResult = new ArrayList<>();
-        random = new Random(seed);
         servers = new ArrayList<>();
         result = 0;
-        
+
         this.printServers();
     }
-    
-    public void showServerErrors(Boolean bool){
+
+    public void showServerErrors(Boolean bool) {
         this.nameError.setVisible(bool);
         this.portError.setVisible(bool);
         this.pathError.setVisible(bool);
     }
-    
-    public void setEditable(Boolean bool){
+
+    public void setEditable(Boolean bool) {
         this.pairNumberArea.setEditable(bool);
         this.serverNameArea.setEditable(bool);
         this.serverPortArea.setEditable(bool);
@@ -60,61 +55,55 @@ public class ClientGUI extends javax.swing.JFrame {
         this.addServerBTN.setEnabled(bool);
         this.initBTN.setEnabled(bool);
     }
-    
+
     public void work() {
         this.setEditable(false);
         this.pairNum = Integer.parseInt(this.pairNumberArea.getText());
         int serverNum = this.servers.size();
-        serverResult = new ArrayList<>();
         long pairsPerServer = this.pairNum / serverNum;
         this.pairs = new ArrayList<>();
-        
+
         //Data initalization
         for (int i = 0; i < serverNum - 1; i++) {
             this.pairs.add(pairsPerServer);
         }
         //Last iteration takes the rest
-        long rest = this.pairNum-pairsPerServer*(serverNum - 1);
+        long rest = this.pairNum - pairsPerServer * (serverNum - 1);
         this.pairs.add(rest);
-        
+
         //Create threads
         threads = new Thread[serverNum];
-        ArrayList<Long> auxArray;
         this.logArea.setText("Creando hilos\n");
         for (int i = 0; i < serverNum; i++) {
-            auxArray = new ArrayList<>();
-            this.serverResult.add(auxArray);
-            threads[i] = new MathHilo("Hilo " + (i+1), this.pairs.get(i), this.servers.get(i), auxArray);
-            this.logArea.append("\t-Hilo"+(i+1)+"]\n");
+            threads[i] = new MathHilo("Hilo " + (i + 1), this.pairs.get(i), this.servers.get(i));
+            this.logArea.append("\t-Hilo" + (i + 1) + "]\n");
         }
-        
+
         //Start threads
         this.logArea.setText("Iniciando hilos");
         for (int i = 0; i < serverNum; i++) {
             threads[i].start();
-            this.logArea.append("\t-Hilo"+(i+1)+"]\n");
+            this.logArea.append("\t-Hilo" + (i + 1) + "]\n");
         }
-        
+
         //Sync with threads
         this.logArea.setText("Esperando por los hilos");
         try {
             for (int i = 0; i < serverNum; i++) {
                 threads[i].join();
-                this.logArea.append("\t-Hilo"+(i+1)+"] ha acabado\n");
+                this.result += ((MathHilo) threads[i]).getResult();
+                this.logArea.append("\t-Hilo" + (i + 1) + "] ha acabado\n");
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(ClientGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         //Show result
         this.logArea.setText("Mostrando resultado");
-        this.serverResult.forEach((result)->{
-            this.result += result.get(0);
-        });
-        this.result = (this.result/(float)this.pairNum)*4;
+        this.result = (this.result / (float) this.pairNum) * 4;
         this.resultArea.setText(String.valueOf(this.result));
         this.result = 0;
-        
+
         //Allow user to start over
         this.setEditable(true);
     }
@@ -472,10 +461,10 @@ public class ClientGUI extends javax.swing.JFrame {
         } else {
             this.showServerErrors(false);
             this.usedPorts.add(Integer.parseInt(this.serverPortArea.getText()));
-            
-            this.servers.add("rmi://" + this.serverNameArea.getText().trim() + 
-                    ":" + this.serverPortArea.getText().trim() + 
-                    "/" + this.serverPathArea.getText().trim());
+
+            this.servers.add("rmi://" + this.serverNameArea.getText().trim()
+                    + ":" + this.serverPortArea.getText().trim()
+                    + "/" + this.serverPathArea.getText().trim());
 
             this.printServers();
             this.serverNameArea.setText("");
@@ -503,22 +492,22 @@ public class ClientGUI extends javax.swing.JFrame {
 
     private void initBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initBTNActionPerformed
         // TODO add your handling code here:
-        if(this.servers.isEmpty()){
+        if (this.servers.isEmpty()) {
             this.initErrorText.setText("La lista de servidores está vacía");
-        }else if(Integer.parseInt(this.pairNumberArea.getText()) <= 0){
+        } else if (Integer.parseInt(this.pairNumberArea.getText()) <= 0) {
             this.initErrorText.setText("El número de pares es incorrecto");
-        }else{
+        } else {
             this.work();
         }
     }//GEN-LAST:event_initBTNActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-            this.usedPorts = new ArrayList<>();
-            this.servers = new ArrayList<>();
-            this.printServers();
-            this.serverNameArea.setText("");
-            this.serverPortArea.setText("");
+        this.usedPorts = new ArrayList<>();
+        this.servers = new ArrayList<>();
+        this.printServers();
+        this.serverNameArea.setText("");
+        this.serverPortArea.setText("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

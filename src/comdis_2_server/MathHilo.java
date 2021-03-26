@@ -5,11 +5,7 @@
  */
 package comdis_2_server;
 
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,25 +15,32 @@ import java.util.logging.Logger;
  */
 public class MathHilo extends Thread{
     
-    Long pairs;
-    ArrayList<Long> result;
-    String registry;
+    private final Long pairs;
+    private Long result;
+    private final String registry;
     
-    public MathHilo(String name, Long pairs, String registry, ArrayList<Long> result){
+    public MathHilo(String name, Long pairs, String registry){
         super(name);
         this.pairs = pairs;
         this.registry = registry;
-        this.result = result;
+        this.result = new Long(0);
     }
     
+    @Override
     public void run(){
         MathInterface h;
         try {
             h = (MathInterface) Naming.lookup(this.registry);
-            this.result.add(h.validatePairs(this.pairs));
-            System.out.println("MathClient: " + this.result.get(0));
+            this.result = h.validatePairs(this.pairs);
+            System.out.println("MathClient: " + this.result);
         } catch (Exception ex) {
             Logger.getLogger(MathHilo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public Long getResult() {
+        return result;
+    }
+    
+    
 }
