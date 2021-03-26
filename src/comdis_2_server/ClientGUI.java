@@ -65,6 +65,7 @@ public class ClientGUI extends javax.swing.JFrame {
         this.setEditable(false);
         this.pairNum = Integer.parseInt(this.pairNumberArea.getText());
         int serverNum = this.servers.size();
+        serverResult = new ArrayList<>();
         int pairsPerServer = this.pairNum / serverNum;
         ArrayList<Double[]> auxList;
         this.pairs = new ArrayList<>();
@@ -89,14 +90,6 @@ public class ClientGUI extends javax.swing.JFrame {
             auxList.add(aux.clone());
         }
         this.pairs.add(auxList);
-        
-        //Log
-//        for (int i = 0; i < this.pairs.size(); i++) {
-//            this.logArea.append("Server "+i+"\n");
-//            this.pairs.get(i).forEach((pair)->{
-//                this.logArea.append("\t["+pair[0]+","+pair[1]+"]\n");
-//            });
-//        }
         
         //Create threads
         threads = new Thread[serverNum];
