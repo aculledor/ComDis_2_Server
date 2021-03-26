@@ -19,6 +19,6 @@ public interface MathInterface extends Remote {
      * @return a String message.
      * @throws java.rmi.RemoteException
      */
-    public long validatePairs(ArrayList<Double[]> pairs) throws java.rmi.RemoteException;
+    public long validatePairs(Long pairs) throws java.rmi.RemoteException;
 
 } //end interface

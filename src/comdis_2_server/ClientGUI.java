@@ -23,7 +23,7 @@ public class ClientGUI extends javax.swing.JFrame {
     public ArrayList<ArrayList<Long>> serverResult;
     public double result;
     public ArrayList<String> servers;
-    public ArrayList<ArrayList<Double[]>> pairs;
+    public ArrayList<Long> pairs;
     public Random random;
     public Thread[] threads;
 
@@ -66,30 +66,16 @@ public class ClientGUI extends javax.swing.JFrame {
         this.pairNum = Integer.parseInt(this.pairNumberArea.getText());
         int serverNum = this.servers.size();
         serverResult = new ArrayList<>();
-        int pairsPerServer = this.pairNum / serverNum;
-        ArrayList<Double[]> auxList;
+        long pairsPerServer = this.pairNum / serverNum;
         this.pairs = new ArrayList<>();
-        Double[] aux = new Double[2];
         
         //Data initalization
         for (int i = 0; i < serverNum - 1; i++) {
-            auxList = new ArrayList<>();
-            for (int j = 0; j < pairsPerServer; j++) {
-                aux[0] = random.nextDouble();
-                aux[1] = random.nextDouble();
-                auxList.add(aux.clone());
-            }
-            this.pairs.add(auxList);
+            this.pairs.add(pairsPerServer);
         }
         //Last iteration takes the rest
-        auxList = new ArrayList<>();
-        int rest = this.pairNum-pairsPerServer*(serverNum - 1);
-        for (int j = 0; j < rest; j++) {
-            aux[0] = random.nextDouble();
-            aux[1] = random.nextDouble();
-            auxList.add(aux.clone());
-        }
-        this.pairs.add(auxList);
+        long rest = this.pairNum-pairsPerServer*(serverNum - 1);
+        this.pairs.add(rest);
         
         //Create threads
         threads = new Thread[serverNum];

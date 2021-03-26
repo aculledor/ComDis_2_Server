@@ -19,11 +19,11 @@ import java.util.logging.Logger;
  */
 public class MathHilo extends Thread{
     
-    ArrayList<Double[]> pairs;
+    Long pairs;
     ArrayList<Long> result;
     String registry;
     
-    public MathHilo(String name, ArrayList<Double[]> pairs, String registry, ArrayList<Long> result){
+    public MathHilo(String name, Long pairs, String registry, ArrayList<Long> result){
         super(name);
         this.pairs = pairs;
         this.registry = registry;
@@ -35,9 +35,9 @@ public class MathHilo extends Thread{
         try {
             h = (MathInterface) Naming.lookup(this.registry);
             this.result.add(h.validatePairs(this.pairs));
+            System.out.println("MathClient: " + this.result.get(0));
         } catch (Exception ex) {
             Logger.getLogger(MathHilo.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("MathClient: " + this.result.get(0));
     }
 }
