@@ -43,6 +43,7 @@ public class ClientGUI extends javax.swing.JFrame {
         this.nameError.setVisible(bool);
         this.portError.setVisible(bool);
         this.pathError.setVisible(bool);
+        this.initErrorText.setVisible(bool);
     }
 
     public void setEditable(Boolean bool) {
@@ -58,6 +59,7 @@ public class ClientGUI extends javax.swing.JFrame {
 
     public void work() {
         this.setEditable(false);
+        this.showServerErrors(false);
         this.pairNum = Integer.parseInt(this.pairNumberArea.getText());
         int serverNum = this.servers.size();
         long pairsPerServer = this.pairNum / serverNum;
@@ -452,9 +454,6 @@ public class ClientGUI extends javax.swing.JFrame {
         if (this.serverNameArea.getText().isEmpty()) {
             this.showServerErrors(false);
             this.nameError.setVisible(true);
-        } else if (this.serverPortArea.getText().isEmpty() || this.usedPorts.contains(Integer.parseInt(this.serverPortArea.getText()))) {
-            this.showServerErrors(false);
-            this.portError.setVisible(true);
         } else if (this.serverPathArea.getText().isEmpty()) {
             this.showServerErrors(false);
             this.pathError.setVisible(true);
